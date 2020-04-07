@@ -16,6 +16,7 @@ const game = {
     cats: [],
     bullets: [],
     catImages: [],
+    changeDirection: false,
     score: 0,
     keys: {
         LEFT: 39,
@@ -53,6 +54,7 @@ const game = {
         this.interval = setInterval(() => {
             this.setListener()
             this.clear()
+
             this.drawAll()
             this.isCollision(this.player.bullets, this.cats)
         }, 60)
@@ -66,9 +68,17 @@ const game = {
         this.player.draw()
         this.drawScore()
         this.drawLives()
-        this.cats.forEach(cat => cat.draw())
-            // if () {
-            //     forEach.)
+        this.cats.forEach(cat => this.checkBoundaries(cat))
+        this.cats.forEach(cat => {
+            cat.draw()
+            if (this.changeDirection) {
+                cat.vel *= -1
+                cat.posY += 85 
+            } 
+            this.move(cat)   
+        })
+        this.changeDirection = false
+
     },
     drawScore() {
         this.ctx.fillStyle = 'white'
@@ -95,6 +105,22 @@ const game = {
             }
         }
     },
+    checkBoundaries(cat){
+        cat.posX >= cat.canvasSize.width - cat.obsWidth || cat.posX <= 0 ? this.changeDirection = true : null
+    },
+    move(cat) {
+        cat.posX += cat.vel
+    },
+    // changeCatDirection(cat) {  // lo meti dentro del forEach?
+    //     cat.vel *= -1
+    //     cat.posY += 85 
+    // },
+
+
+
+
+
+
     gameOver(){
         //clearInterval(this.interval)
     },
@@ -115,5 +141,13 @@ const game = {
             }
         })
     )}
+
+
+
+
 }
+
+
+
+
 
