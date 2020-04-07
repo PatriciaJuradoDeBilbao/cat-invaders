@@ -26,14 +26,13 @@ class Cat {
     } 
     changeDirection() {
         this.vel *= -1
-        this.posY += 85
+        this.posY += 85 //este lo meto en el foreach
     }
-    // shoot() {
-    //     if(this.cat % 85 === 0) {
-    //         this.bulletCat.push(new Bullets(this.ctx, this.posX, this.posY, this.posY0, this.playerWidth, this.playerHeight))
-    //     }
-    // }
-    // clearBullets() {
-    //     this.bulletCat = this.bulletCat.filter(bull => bull.posY <= 120)
-    //   }
+    shoot() {
+        
+        this.bulletCat.push(new Bullets(this.ctx, this.posX, this.posY, this.posY0, this.playerWidth, this.playerHeight))
+    }
+    clearBullets() {
+        this.bulletCat = this.bulletCat.filter(bull => bull.posY <= 120)
+      }
 }

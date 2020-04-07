@@ -26,6 +26,7 @@ const game = {
         this.canvasDom = document.getElementById("catInvadersCanvas")
         this.ctx = this.canvasDom.getContext("2d")
         this.setDimensions()
+        this.reset()
         this.start()
     },
     setDimensions() {
@@ -39,16 +40,22 @@ const game = {
             e.keyCode === this.keys.SPACE ? this.player.shoot('space')  : null                                                                                                  
         })
     },
-    start() {
+    reset() {
         this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
-        this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height, this.keys)
+        this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height)
         this.generateCats()
+    },
+    start() {
+        // this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
+        // this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height, this.keys)
+        // this.generateCats()
+        
         this.interval = setInterval(() => {
             this.setListener()
             this.clear()
             this.drawAll()
             this.isCollision(this.player.bullets, this.cats)
-        }, 1000 / this.FPS)
+        }, 60)
     },
     clear() {
         this.ctx.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
@@ -60,6 +67,8 @@ const game = {
         this.drawScore()
         this.drawLives()
         this.cats.forEach(cat => cat.draw())
+            // if () {
+            //     forEach.)
     },
     drawScore() {
         this.ctx.fillStyle = 'white'
@@ -78,10 +87,6 @@ const game = {
         this.lives = `./img/water-gun.png`
         this.lives.onload = () => this.ctx.drawImage(this.lives, this.canvasSize.width - 135, 25, 40, 40)
     },
-    reset() {
-        this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
-        this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height)
-    },
     generateCats() {
         this.catImages.push("./img/pushee_donut.png", "./img/cry-cat.png", "./img/pixel-cat-png.png")
         for (let row = 0; row <= this.catImages.length - 1; row++) {
@@ -91,7 +96,7 @@ const game = {
         }
     },
     gameOver(){
-        clearInterval(this.interval)
+        //clearInterval(this.interval)
     },
     isCollision(bulletsArr, catArr) {
         bulletsArr.forEach(bullet =>
