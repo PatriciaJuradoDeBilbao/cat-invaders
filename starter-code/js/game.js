@@ -15,8 +15,10 @@ const game = {
     player: undefined,
     cats: [],
     bullets: [],
+    bulletCat: [],
     catImages: [],
     changeDirection: false,
+    shootCounter: 0,
     score: 0,
     keys: {
         LEFT: 39,
@@ -47,15 +49,16 @@ const game = {
         this.generateCats()
     },
     start() {
-        // this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
-        // this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height, this.keys)
-        // this.generateCats()
-        
+        this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
+        this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height, this.keys)
         this.interval = setInterval(() => {
             this.setListener()
             this.clear()
-
             this.drawAll()
+            this.shootCounter++
+            if (this.shootCounter % 15 === 0) {
+                this.cats[Math.floor(Math.random() * this.cats.length)].shoot()
+            }
             this.isCollision(this.player.bullets, this.cats)
         }, 60)
     },
@@ -78,7 +81,6 @@ const game = {
             this.move(cat)   
         })
         this.changeDirection = false
-
     },
     drawScore() {
         this.ctx.fillStyle = 'white'
@@ -92,7 +94,6 @@ const game = {
         this.ctx.fillStyle = 'white'
         this.ctx.font = '30px Courier New'
         this.ctx.fillText(`LIVES:` , this.canvasSize.width - 250, 60)
-        
         this.lives = new Image()
         this.lives = `./img/water-gun.png`
         this.lives.onload = () => this.ctx.drawImage(this.lives, this.canvasSize.width - 135, 25, 40, 40)
@@ -111,26 +112,20 @@ const game = {
     move(cat) {
         cat.posX += cat.vel
     },
-    // changeCatDirection(cat) {  // lo meti dentro del forEach?
+    // changeCatDirection(cat) {  // lo meti dentro del forEach o lo dejo asi y lo llamo en el forEach?
     //     cat.vel *= -1
     //     cat.posY += 85 
     // },
-
-
-
-
-
-
     gameOver(){
-        //clearInterval(this.interval)
+        clearInterval(this.interval)
     },
     isCollision(bulletsArr, catArr) {
         bulletsArr.forEach(bullet =>
           catArr.forEach(catEnemy => {
             if (
-                bullet.posX < catEnemy.posX + catEnemy.obsWidth * 0.85 &&
+                bullet.posX < catEnemy.posX + catEnemy.obsWidth &&
                 bullet.posX + bullet.bulletWidth > catEnemy.posX &&
-                bullet.posY < catEnemy.posY + catEnemy.obsHeight * 0.85 &&
+                bullet.posY < catEnemy.posY + catEnemy.obsHeight &&
                 bullet.posY + bullet.bulletHeight > catEnemy.posY
             ) {
             this.scorePoints()
@@ -141,10 +136,6 @@ const game = {
             }
         })
     )}
-
-
-
-
 }
 
 
