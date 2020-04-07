@@ -44,10 +44,10 @@ const game = {
         this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height, this.keys)
         this.generateCats()
         this.interval = setInterval(() => {
-            //this.setListener()
+            this.setListener()
             this.clear()
             this.drawAll()
-            //this.isCollision(this.player.bullets, this.cats)
+            this.isCollision(this.player.bullets, this.cats)
         }, 1000 / this.FPS)
     },
     clear() {
@@ -55,10 +55,10 @@ const game = {
         this.player.clearBullets()
     },
     drawAll() {
-        //this.background.draw()
-        // this.player.draw()
-        // this.drawScore()
-        // this.drawLives()
+        this.background.draw()
+        this.player.draw()
+        this.drawScore()
+        this.drawLives()
         this.cats.forEach(cat => cat.draw())
     },
     drawScore() {
@@ -81,14 +81,11 @@ const game = {
     reset() {
         this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
         this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height)
-        //this.rowCat1 = new Cats(this.ctx, 50, 100, 80, 80, this.canvasSize, "./img/pushee_donut.png")
-        //this.rowCat2 = new Cats(this.ctx, 50, 180, 80, 80, this.canvasSize, "./img/cry-cat.png")
-        //this.rowCat3 = new Cats(this.ctx, 50, 260, 80, 80, this.canvasSize, "./img/pixel-rowCat2.png")
     },
     generateCats() {
-        this.catImages.push("./img/pushee_donut.png") //"./img/cry-cat.png", "./img/pixel-cat-png.png")
+        this.catImages.push("./img/pushee_donut.png", "./img/cry-cat.png", "./img/pixel-cat-png.png")
         for (let row = 0; row <= this.catImages.length - 1; row++) {
-            for (let i = 0; i <= 3; i++) {
+            for (let i = 0; i <= 7; i++) {
                 this.cats.push(new Cat(this.ctx, 50 + 85 * i, 100 + 80 * row, 80, 80, this.canvasSize, this.catImages[row]))
             }
         }
