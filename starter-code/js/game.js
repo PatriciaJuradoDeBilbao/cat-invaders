@@ -17,8 +17,9 @@ const game = {
     cats: [],
     bullets: [],
     catImages: [],
+    pointsPowerUp: null,
     changeDirection: false,
-    shootCounter: 0,
+    counter: 0,
     score: 0,
     keys: {
         LEFT: 39,
@@ -58,10 +59,15 @@ const game = {
             this.setListener()
             this.clear()
             this.drawAll()
-            this.shootCounter++
-            if (this.shootCounter % 65 === 0) {
+            this.counter++
+            if (this.counter % 65 === 0) {
                 this.cats[Math.floor(Math.random() * this.cats.length)].shoot()
             }
+            if(this.counter % (50 + Math.floor(Math.random() * 20)) === 0 && this.pointsPowerUp === null) {
+                this.pointsPowerUp = new Points(this.ctx, this.canvasSize)
+                console.log('hola power up')
+            }
+            
             this.isCollisionAgainstCats(this.player.bullets, this.cats)
             this.cats.forEach(cat => this.isCollisionAgainstPlayer(cat.bulletCat))
             this.isCollisionGameOver(this.cats)
@@ -88,6 +94,12 @@ const game = {
             this.move(cat)   
         })
         this.changeDirection = false
+        if(this.pointsPowerUp != null) {
+            this.pointsPowerUp.draw()
+            if (this.pointsPowerUp.posX > this.pointsPowerUp.canvasSize.width) { 
+                this.pointsPowerUp = null
+            }
+        }
     },
     generateCats() {
         this.catImages.push("./img/pushee_donut.png", "./img/cry-cat.png", "./img/pixel-cat-png.png", "./img/pixel-cat-png.png")
@@ -156,9 +168,6 @@ const game = {
                 this.gameOver()
             }
         })
-    },
-    powerUp(){
-
     }
 }
 
