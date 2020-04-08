@@ -9,12 +9,11 @@ class Bullets {
     this.bulletWidth = this.playerWidth / 2
     this.bulletHeight = this.playerHeight / 2
     this.vel = 100
-    this.draw()
-    }
-  draw() {
     this.bullets = new Image()
     this.bullets.src = `./img/waterdrop.png`
-    this.bullets.onload = () => this.ctx.drawImage(this.bullets, this.posX, this.posY, this.bulletWidth, this.bulletHeight)
+    }
+  draw() {
+    this.ctx.drawImage(this.bullets, this.posX, this.posY, this.bulletWidth, this.bulletHeight)
     this.move()
   }
   move() {

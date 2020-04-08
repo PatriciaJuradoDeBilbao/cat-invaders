@@ -15,7 +15,6 @@ const game = {
     player: undefined,
     cats: [],
     bullets: [],
-    bulletCat: [],
     catImages: [],
     changeDirection: false,
     shootCounter: 0,
@@ -56,10 +55,14 @@ const game = {
             this.clear()
             this.drawAll()
             this.shootCounter++
-            if (this.shootCounter % 15 === 0) {
+            if (this.shootCounter % 65 === 0) {
                 this.cats[Math.floor(Math.random() * this.cats.length)].shoot()
+                
             }
-            this.isCollision(this.player.bullets, this.cats)
+            this.isCollisionAgainstCats(this.player.bullets, this.cats)
+            this.cats.forEach(cat => this.isCollisionAgainstPlayer(cat.bulletCat))
+            this.isCollisionGameOver(this.cats)
+
         }, 60)
     },
     clear() {
@@ -75,8 +78,7 @@ const game = {
         this.cats.forEach(cat => {
             cat.draw()
             if (this.changeDirection) {
-                cat.vel *= -1
-                cat.posY += 85 
+                this.changeCatDirection(cat)
             } 
             this.move(cat)   
         })
@@ -99,7 +101,7 @@ const game = {
         this.lives.onload = () => this.ctx.drawImage(this.lives, this.canvasSize.width - 135, 25, 40, 40)
     },
     generateCats() {
-        this.catImages.push("./img/pushee_donut.png", "./img/cry-cat.png", "./img/pixel-cat-png.png")
+        this.catImages.push("./img/pushee_donut.png", "./img/cry-cat.png", "./img/pixel-cat-png.png", "./img/pixel-cat-png.png")
         for (let row = 0; row <= this.catImages.length - 1; row++) {
             for (let i = 0; i <= 7; i++) {
                 this.cats.push(new Cat(this.ctx, 50 + 85 * i, 100 + 80 * row, 80, 80, this.canvasSize, this.catImages[row]))
@@ -112,14 +114,14 @@ const game = {
     move(cat) {
         cat.posX += cat.vel
     },
-    // changeCatDirection(cat) {  // lo meti dentro del forEach o lo dejo asi y lo llamo en el forEach?
-    //     cat.vel *= -1
-    //     cat.posY += 85 
-    // },
+    changeCatDirection(cat) {  
+        cat.vel *= -1
+        cat.posY += 30
+    },
     gameOver(){
         clearInterval(this.interval)
     },
-    isCollision(bulletsArr, catArr) {
+    isCollisionAgainstCats(bulletsArr, catArr) {
         bulletsArr.forEach(bullet =>
           catArr.forEach(catEnemy => {
             if (
@@ -129,13 +131,40 @@ const game = {
                 bullet.posY + bullet.bulletHeight > catEnemy.posY
             ) {
             this.scorePoints()
-            let catEnemyIndex = catArr.indexOf(catEnemy);
-            catArr.splice(catEnemyIndex, 1);
-            let bulletIndex = bulletsArr.indexOf(bullet);
-            bulletsArr.splice(bulletIndex, 1);
+            let catEnemyIndex = catArr.indexOf(catEnemy)
+            catArr.splice(catEnemyIndex, 1)
+            let bulletIndex = bulletsArr.indexOf(bullet)
+            bulletsArr.splice(bulletIndex, 1)
             }
         })
-    )}
+    )},
+    isCollisionAgainstPlayer(cats) {
+        cats.forEach(bullet => {
+                if (
+                    bullet.posX < this.player.posX + this.player.playerWidth &&
+                    bullet.posX + bullet.bulletCatWidth > this.player.posX &&
+                    bullet.posY < this.player.posY + this.player.playerHeight &&
+                    bullet.posY + bullet.bulletCatHeight > this.player.posY
+                ) {
+                let bulletIndex = cats.indexOf(bullet)
+                cats.splice(bulletIndex, 1)    
+                // añadir que quite una vida  
+            } 
+        })    
+    },
+    isCollisionGameOver(catArr) {
+        catArr.forEach(catEnemy => {
+            if (
+                catEnemy.posX < this.player.posX + this.player.playerWidth &&
+                catEnemy.posX + catEnemy.obsWidth > this.player.posX &&
+                catEnemy.posY < this.player.posY + this.player.playerHeight &&
+                catEnemy.posY + catEnemy.obsHeight > this.player.posY
+            ) {
+                console.log('los gatos llegaron al player')
+                this.gameOver()
+            }
+        })
+    }
 }
 
 

@@ -13,14 +13,14 @@ class Cat {
         }
         this.imgSource = imgSource
         this.bulletCat = []
+        this.cat = new Image()
+        this.cat.src = this.imgSource
 
     }
     draw() {
-        this.cat = new Image()
-        this.cat.src = this.imgSource
-        this.cat.onload = () => this.ctx.drawImage(this.cat, this.posX, this.posY, this.obsWidth, this.obsHeight)
+        this.ctx.drawImage(this.cat, this.posX, this.posY, this.obsWidth, this.obsHeight)
         this.bulletCat.forEach(bullet => bullet.draw())
-        //this.move()
+        
 
     }
     // move() {
@@ -32,8 +32,7 @@ class Cat {
     //     this.posY += 85 //este lo meto en el foreach
     // }
     shoot() {
-        console.log('im shooting')
-        this.bulletCat.push(new BulletsCat(this.ctx, this.posX, this.posY, this.posY0, this.playerWidth, this.playerHeight))
+        this.bulletCat.push(new BulletsCat(this.ctx, this.posX, this.posY, this.obsWidth, this.obsHeight))
     }
     clearBullets() {
         this.bulletCat = this.bulletCat.filter(bull => bull.posY <= 120)

@@ -14,11 +14,11 @@ class Player {
             width: canvasSize.width, 
             height: canvasSize.height
         }
-    }
-    draw() {
         this.player = new Image();
         this.player.src = `./img/water-gun.png`
-        this.player.onload = () => this.ctx.drawImage(this.player, this.posX, this.posY, this.playerWidth, this.playerHeight)
+    }
+    draw() {
+        this.ctx.drawImage(this.player, this.posX, this.posY, this.playerWidth, this.playerHeight)
         this.clearBullets()
         this.bullets.forEach(bullet => bullet.draw())
         this.move()
