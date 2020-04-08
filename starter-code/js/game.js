@@ -13,6 +13,7 @@ const game = {
     FPS: 3,
     background: undefined,
     player: undefined,
+    board: undefined,
     cats: [],
     bullets: [],
     catImages: [],
@@ -46,10 +47,13 @@ const game = {
         this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
         this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height)
         this.generateCats()
+        
     },
     start() {
         this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
         this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height, this.keys)
+        this.scorePoints = new ScorePoints(this.ctx, this.canvasSize)
+        this.playerLives = new PlayerLives(this.ctx, this.canvasSize, 3, './img/water-gun.png')
         this.interval = setInterval(() => {
             this.setListener()
             this.clear()
@@ -57,12 +61,13 @@ const game = {
             this.shootCounter++
             if (this.shootCounter % 65 === 0) {
                 this.cats[Math.floor(Math.random() * this.cats.length)].shoot()
-                
             }
             this.isCollisionAgainstCats(this.player.bullets, this.cats)
             this.cats.forEach(cat => this.isCollisionAgainstPlayer(cat.bulletCat))
             this.isCollisionGameOver(this.cats)
-
+            if(this.playerLives.num <= 0){
+                this.gameOver()
+            }
         }, 60)
     },
     clear() {
@@ -72,8 +77,8 @@ const game = {
     drawAll() {
         this.background.draw()
         this.player.draw()
-        this.drawScore()
-        this.drawLives()
+        this.scorePoints.draw()
+        this.playerLives.draw()
         this.cats.forEach(cat => this.checkBoundaries(cat))
         this.cats.forEach(cat => {
             cat.draw()
@@ -84,32 +89,16 @@ const game = {
         })
         this.changeDirection = false
     },
-    drawScore() {
-        this.ctx.fillStyle = 'white'
-        this.ctx.font = '30px Courier New'
-        this.ctx.fillText(`SCORE: < ${this.score} >`, 50, 60)
-    },
-    scorePoints() {
-        this.score += 50
-    },
-    drawLives() {
-        this.ctx.fillStyle = 'white'
-        this.ctx.font = '30px Courier New'
-        this.ctx.fillText(`LIVES:` , this.canvasSize.width - 250, 60)
-        this.lives = new Image()
-        this.lives = `./img/water-gun.png`
-        this.lives.onload = () => this.ctx.drawImage(this.lives, this.canvasSize.width - 135, 25, 40, 40)
-    },
     generateCats() {
         this.catImages.push("./img/pushee_donut.png", "./img/cry-cat.png", "./img/pixel-cat-png.png", "./img/pixel-cat-png.png")
         for (let row = 0; row <= this.catImages.length - 1; row++) {
-            for (let i = 0; i <= 7; i++) {
+            for (let i = 0; i <= 9; i++) {
                 this.cats.push(new Cat(this.ctx, 50 + 85 * i, 100 + 80 * row, 80, 80, this.canvasSize, this.catImages[row]))
             }
         }
     },
     checkBoundaries(cat){
-        cat.posX >= cat.canvasSize.width - cat.obsWidth || cat.posX <= 0 ? this.changeDirection = true : null
+        cat.posX >= cat.canvasSize.width - cat.obsWidth || cat.posX <= 0 ? this.changeDirection = true : null // revisar lado derecho que no llega hasta el final de la pantalla 
     },
     move(cat) {
         cat.posX += cat.vel
@@ -119,7 +108,11 @@ const game = {
         cat.posY += 30
     },
     gameOver(){
+        //setTimeOut
         clearInterval(this.interval)
+        this.ctx.font = 'bold 100px Courier New'
+        this.ctx.fillStyle = 'rgb(253, 227, 0)'
+        this.ctx.fillText('GAME OVER', this.canvasSize.width / 2, this.canvasSize.height / 2)
     },
     isCollisionAgainstCats(bulletsArr, catArr) {
         bulletsArr.forEach(bullet =>
@@ -130,7 +123,7 @@ const game = {
                 bullet.posY < catEnemy.posY + catEnemy.obsHeight &&
                 bullet.posY + bullet.bulletHeight > catEnemy.posY
             ) {
-            this.scorePoints()
+            this.scorePoints.addPoints()
             let catEnemyIndex = catArr.indexOf(catEnemy)
             catArr.splice(catEnemyIndex, 1)
             let bulletIndex = bulletsArr.indexOf(bullet)
@@ -148,7 +141,7 @@ const game = {
                 ) {
                 let bulletIndex = cats.indexOf(bullet)
                 cats.splice(bulletIndex, 1)    
-                // añadir que quite una vida  
+                this.playerLives.removeLives() 
             } 
         })    
     },
@@ -160,10 +153,12 @@ const game = {
                 catEnemy.posY < this.player.posY + this.player.playerHeight &&
                 catEnemy.posY + catEnemy.obsHeight > this.player.posY
             ) {
-                console.log('los gatos llegaron al player')
                 this.gameOver()
             }
         })
+    },
+    powerUp(){
+
     }
 }
 

@@ -2,10 +2,10 @@ class BulletsCat {
     constructor(ctx, catPosX, catPosY, catWidth, catHeight) {
         this.ctx = ctx
         this.posX = catPosX + catWidth / 2  
-        this.posY = catPosY + catHeight
-        this.bulletCatWidth = 20
-        this.bulletCatHeight = 30
-        this.vel = 10
+        this.posY = catPosY + catHeight / 2
+        this.bulletCatWidth = 15
+        this.bulletCatHeight = 25
+        this.vel = 15
         this.bulletCat = new Image()
         this.bulletCat.src = `./img/fishbone.png`
     }
@@ -16,5 +16,5 @@ class BulletsCat {
     }
     move() {
         this.posY += this.vel
-  }
+    }
 }

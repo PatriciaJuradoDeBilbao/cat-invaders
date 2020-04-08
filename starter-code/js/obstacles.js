@@ -6,7 +6,7 @@ class Cat {
         this.posY = posY
         this.obsWidth = obsWidth
         this.obsHeight = obsHeight
-        this.vel = 5
+        this.vel = 3
         this.canvasSize = {
             width: canvasSize.width, 
             height: canvasSize.height
@@ -35,6 +35,6 @@ class Cat {
         this.bulletCat.push(new BulletsCat(this.ctx, this.posX, this.posY, this.obsWidth, this.obsHeight))
     }
     clearBullets() {
-        this.bulletCat = this.bulletCat.filter(bull => bull.posY <= 120)
+        this.bulletCat = this.bulletCat.filter(bull => bull.posY >= canvasSize.height)
       }
 }
