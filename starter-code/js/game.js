@@ -128,16 +128,6 @@ const game = {
         cat.vel *= -1
         cat.posY += 25
     },
-    gameOver(){
-        
-        clearInterval(this.interval)
-        this.ctx.fillStyle = 'rgba(119, 124, 188)'
-        this.ctx.fillRect(this.canvasSize.width / 2 - 400, this.canvasSize.height / 2 - 300, 800, 600)
-        this.ctx.font = 'bold 100px Courier New'
-        this.ctx.fillStyle = 'rgba(253, 227, 0)'
-        this.ctx.fillText('GAME OVER', this.canvasSize.width / 2 - 250, this.canvasSize.height / 2 )
-        
-    },
     isCollisionAgainstCats(bulletsArr, catArr) {
         bulletsArr.forEach(bullet => {
             catArr.forEach(catEnemy => {
@@ -146,8 +136,8 @@ const game = {
                     bullet.posX + bullet.bulletWidth > catEnemy.posX &&
                     bullet.posY < catEnemy.posY + catEnemy.obsHeight &&
                     bullet.posY + bullet.bulletHeight > catEnemy.posY
-                ) {
-                this.scorePoints.addPoints()
+                    ) {
+                        this.scorePoints.addPoints()
                 let catEnemyIndex = catArr.indexOf(catEnemy)
                 catArr.splice(catEnemyIndex, 1)
                 let bulletIndex = bulletsArr.indexOf(bullet)
@@ -160,14 +150,14 @@ const game = {
                 bullet.posX + bullet.bulletWidth > this.pointsPowerUp.posX &&
                 bullet.posY < this.pointsPowerUp.posY + this.pointsPowerUp.height &&
                 bullet.posY + bullet.bulletHeight > this.pointsPowerUp.posY
-            ) {
-            this.scorePoints.powerUpPoints()
-            let bulletIndex = bulletsArr.indexOf(bullet)
-            bulletsArr.splice(bulletIndex, 1)
-            this.pointsPowerUp = null
-            } 
-        })
-    },
+                ) {
+                    this.scorePoints.powerUpPoints()
+                    let bulletIndex = bulletsArr.indexOf(bullet)
+                    bulletsArr.splice(bulletIndex, 1)
+                    this.pointsPowerUp = null
+                } 
+            })
+        },
     isCollisionAgainstPlayer(cats) {
         cats.forEach(bullet => {
                 if (
@@ -188,7 +178,7 @@ const game = {
             this.extraLive.posY < this.player.posY + this.player.playerHeight &&
             this.extraLive.posY + this.extraLive.height > this.player.posY
         ) {
-        this.playerLives.addLives()
+            this.playerLives.addLives()
         this.extraLive = null
         } 
     },
@@ -203,6 +193,14 @@ const game = {
                 this.gameOver()
             }
         })
+    },
+    gameOver(){
+        clearInterval(this.interval)
+        setTimeout(() => clearInterval(this.interval), 5000)
+        
+        this.ctx.font = 'bold 100px Courier New'
+        this.ctx.fillStyle = 'rgba(253, 227, 0)'
+        this.ctx.fillText('GAME OVER', this.canvasSize.width / 2 - 250, this.canvasSize.height / 2 )
     }
 }
 

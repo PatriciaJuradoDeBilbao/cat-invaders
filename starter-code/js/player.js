@@ -24,8 +24,8 @@ class Player {
         this.move()
     }
     move(dir) {
-        if (this.posX <= 20) {
-            this.posX = 20
+        if (this.posX <= 0) {
+            this.posX = 0
         }
         if (this.posX >= 880) {
             this.posX = 880

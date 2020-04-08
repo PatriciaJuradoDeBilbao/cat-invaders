@@ -8,14 +8,12 @@ body {
     text-align: center;
     font-family: monospace;
     background-color: black;
-
  } 
 
 .game-intro {
     float: left;
     padding: 10% 10%;
     border-right: 1px solid blanchedalmond;
-
 }
 
 .logo-img {
@@ -46,8 +44,4 @@ p {
     color: rgb(119, 124, 188);
     font-weight: 700;
     line-height: 2;
-}
-
-#game-board {
-    float: left;
 }
