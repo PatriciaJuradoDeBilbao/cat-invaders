@@ -5,7 +5,6 @@ class PlayerLives {
             width: canvasSize.width, 
             height: canvasSize.height
         }
-        this.score = 0
         this.num = num
         this.lives = new Image()
         this.lives.src = imgSource
@@ -15,10 +14,15 @@ class PlayerLives {
         this.ctx.font = '30px Courier New'
         this.ctx.fillText(`LIVES:` , this.canvasSize.width - 300, 60)
         for (let i = 0; i < this.num; i++) {
-            this.ctx.drawImage(this.lives, this.canvasSize.width - 175 + 50 * i, 35, 30, 30)
+            this.ctx.drawImage(this.lives, this.canvasSize.width - 180 + 55 * i, 25, 45, 45)
         }
     }
     removeLives() {
         this.num--
     } 
+    addLives(){
+        if(this.num < 3) {
+            this.num++
+        }
+    }
 }

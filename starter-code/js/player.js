@@ -6,7 +6,7 @@ class Player {
         this.playerWidth = playerWidth
         this.playerHeight = playerHeight
         this.player = undefined
-        this.vel = 10
+        this.vel = 15
         this.posY0 = this.posY
         this.keys = keys
         this.bullets = []

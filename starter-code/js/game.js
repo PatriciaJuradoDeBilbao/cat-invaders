@@ -18,6 +18,8 @@ const game = {
     bullets: [],
     catImages: [],
     pointsPowerUp: null,
+    scorePoints: undefined,
+    extraLive: null,
     changeDirection: false,
     counter: 0,
     score: 0,
@@ -48,30 +50,31 @@ const game = {
         this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
         this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height)
         this.generateCats()
-        
     },
     start() {
         this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
         this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height, this.keys)
         this.scorePoints = new ScorePoints(this.ctx, this.canvasSize)
-        this.playerLives = new PlayerLives(this.ctx, this.canvasSize, 3, './img/water-gun.png')
+        this.playerLives = new PlayerLives(this.ctx, this.canvasSize, 3, './img/lives-pixel-heart-png')
         this.interval = setInterval(() => {
             this.setListener()
             this.clear()
             this.drawAll()
             this.counter++
-            if (this.counter % 65 === 0) {
+            if (this.counter % 20 === 0) {
                 this.cats[Math.floor(Math.random() * this.cats.length)].shoot()
             }
-            if(this.counter % (50 + Math.floor(Math.random() * 20)) === 0 && this.pointsPowerUp === null) {
+            if (this.counter % (170 + Math.floor(Math.random() * 35)) === 0 && this.pointsPowerUp === null) {
                 this.pointsPowerUp = new Points(this.ctx, this.canvasSize)
-                console.log('hola power up')
             }
-            
+            if (this.counter % (160 + Math.floor(Math.random() * 25)) === 0 && this.extraLive === null) {
+                this.extraLive = new ExtraLives(this.ctx, this.canvasSize)
+                
+            }
             this.isCollisionAgainstCats(this.player.bullets, this.cats)
             this.cats.forEach(cat => this.isCollisionAgainstPlayer(cat.bulletCat))
             this.isCollisionGameOver(this.cats)
-            if(this.playerLives.num <= 0){
+            if (this.playerLives.num <= 0) {
                 this.gameOver()
             }
         }, 60)
@@ -94,10 +97,16 @@ const game = {
             this.move(cat)   
         })
         this.changeDirection = false
-        if(this.pointsPowerUp != null) {
+        if (this.pointsPowerUp != null) {
             this.pointsPowerUp.draw()
             if (this.pointsPowerUp.posX > this.pointsPowerUp.canvasSize.width) { 
                 this.pointsPowerUp = null
+            }
+        }
+        if (this.extraLive != null) {
+            this.extraLive.draw()
+            if (this.extraLive.posY > this.extraLive.canvasSize.height) {
+                this.extraLive = null
             }
         }
     },
@@ -117,32 +126,48 @@ const game = {
     },
     changeCatDirection(cat) {  
         cat.vel *= -1
-        cat.posY += 30
+        cat.posY += 25
     },
     gameOver(){
-        //setTimeOut
+        
         clearInterval(this.interval)
+        this.ctx.fillStyle = 'rgba(119, 124, 188)'
+        this.ctx.fillRect(this.canvasSize.width / 2 - 400, this.canvasSize.height / 2 - 300, 800, 600)
         this.ctx.font = 'bold 100px Courier New'
-        this.ctx.fillStyle = 'rgb(253, 227, 0)'
-        this.ctx.fillText('GAME OVER', this.canvasSize.width / 2, this.canvasSize.height / 2)
+        this.ctx.fillStyle = 'rgba(253, 227, 0)'
+        this.ctx.fillText('GAME OVER', this.canvasSize.width / 2 - 250, this.canvasSize.height / 2 )
+        
     },
     isCollisionAgainstCats(bulletsArr, catArr) {
-        bulletsArr.forEach(bullet =>
-          catArr.forEach(catEnemy => {
+        bulletsArr.forEach(bullet => {
+            catArr.forEach(catEnemy => {
+                if (
+                    bullet.posX < catEnemy.posX + catEnemy.obsWidth &&
+                    bullet.posX + bullet.bulletWidth > catEnemy.posX &&
+                    bullet.posY < catEnemy.posY + catEnemy.obsHeight &&
+                    bullet.posY + bullet.bulletHeight > catEnemy.posY
+                ) {
+                this.scorePoints.addPoints()
+                let catEnemyIndex = catArr.indexOf(catEnemy)
+                catArr.splice(catEnemyIndex, 1)
+                let bulletIndex = bulletsArr.indexOf(bullet)
+                bulletsArr.splice(bulletIndex, 1)
+                }
+            })
             if (
-                bullet.posX < catEnemy.posX + catEnemy.obsWidth &&
-                bullet.posX + bullet.bulletWidth > catEnemy.posX &&
-                bullet.posY < catEnemy.posY + catEnemy.obsHeight &&
-                bullet.posY + bullet.bulletHeight > catEnemy.posY
+                this.pointsPowerUp != null &&
+                bullet.posX < this.pointsPowerUp.posX + this.pointsPowerUp.width &&
+                bullet.posX + bullet.bulletWidth > this.pointsPowerUp.posX &&
+                bullet.posY < this.pointsPowerUp.posY + this.pointsPowerUp.height &&
+                bullet.posY + bullet.bulletHeight > this.pointsPowerUp.posY
             ) {
-            this.scorePoints.addPoints()
-            let catEnemyIndex = catArr.indexOf(catEnemy)
-            catArr.splice(catEnemyIndex, 1)
+            this.scorePoints.powerUpPoints()
             let bulletIndex = bulletsArr.indexOf(bullet)
             bulletsArr.splice(bulletIndex, 1)
-            }
+            this.pointsPowerUp = null
+            } 
         })
-    )},
+    },
     isCollisionAgainstPlayer(cats) {
         cats.forEach(bullet => {
                 if (
@@ -154,8 +179,18 @@ const game = {
                 let bulletIndex = cats.indexOf(bullet)
                 cats.splice(bulletIndex, 1)    
                 this.playerLives.removeLives() 
-            } 
-        })    
+            }
+        })
+        if (
+            this.extraLive != null &&
+            this.extraLive.posX < this.player.posX + this.player.playerWidth &&
+            this.extraLive.posX + this.extraLive.width > this.player.posX &&
+            this.extraLive.posY < this.player.posY + this.player.playerHeight &&
+            this.extraLive.posY + this.extraLive.height > this.player.posY
+        ) {
+        this.playerLives.addLives()
+        this.extraLive = null
+        } 
     },
     isCollisionGameOver(catArr) {
         catArr.forEach(catEnemy => {
