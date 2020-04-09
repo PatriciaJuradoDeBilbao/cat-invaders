@@ -37,6 +37,6 @@ class Player {
         this.bullets.push(new Bullets(this.ctx, this.posX, this.posY, this.posY0, this.playerWidth, this.playerHeight))
     }
     clearBullets() {
-        this.bullets = this.bullets.filter(bull => bull.posX >= 120)
+        this.bullets = this.bullets.filter(bull => bull.posY >= - 120)
       }
 }

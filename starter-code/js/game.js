@@ -55,8 +55,6 @@ const game = {
         this.bullets = []
         this.catImages = []
         this.pointsPowerUp = null
-
-
         //instanciar sonidos
         //this.nombreaudio = new Audio()
         //this.nombreaudio.src = `ruta`
@@ -64,7 +62,6 @@ const game = {
     },
     start() {
         this.reset()
-
         this.generateCats()
         //sonido fondo play
         this.interval = setInterval(() => {
@@ -73,12 +70,14 @@ const game = {
             this.drawAll()
             this.counter++
             if (this.counter % 20 === 0) {
-                this.cats[Math.floor(Math.random() * this.cats.length)].shoot()
+                if(this.cats.length > 0) {
+                    this.cats[Math.floor(Math.random() * this.cats.length)].shoot()
+                }
             }
-            if (this.counter % (170 + Math.floor(Math.random() * 35)) === 0 && this.pointsPowerUp === null) {
+            if (this.counter % (230 + Math.floor(Math.random() * 35)) === 0 && this.pointsPowerUp === null) {
                 this.pointsPowerUp = new Points(this.ctx, this.canvasSize)
             }
-            if (this.counter % (160 + Math.floor(Math.random() * 25)) === 0 && this.extraLive === null) {
+            if (this.counter % (200 + Math.floor(Math.random() * 25)) === 0 && this.extraLive === null) {
                 this.extraLive = new ExtraLives(this.ctx, this.canvasSize)
                 
             }
@@ -120,6 +119,7 @@ const game = {
                 this.extraLive = null
             }
         }
+        
     },
     generateCats() {
         this.catImages.push("./img/pushee_donut.png", "./img/cry-cat.png", "./img/pixel-cat-png.png", "./img/pixel-cat-png.png")
@@ -168,7 +168,11 @@ const game = {
                     this.pointsPowerUp = null
                 } 
             })
-        },
+        if (catArr.length <= 0) {
+            this.youWin()
+            
+        }
+    },
     isCollisionAgainstPlayer(cats) {
         cats.forEach(bullet => {
                 if (
@@ -189,7 +193,7 @@ const game = {
             this.extraLive.posY < this.player.posY + this.player.playerHeight &&
             this.extraLive.posY + this.extraLive.height > this.player.posY
         ) {
-            this.playerLives.addLives()
+        this.playerLives.addLives()
         this.extraLive = null
         } 
     },
@@ -201,20 +205,50 @@ const game = {
                 catEnemy.posY < this.player.posY + this.player.playerHeight &&
                 catEnemy.posY + catEnemy.obsHeight > this.player.posY
             ) {
-                this.gameOver()
+            this.gameOver()
             }
         })
     },
     gameOver(){
         setTimeout(() => clearInterval(this.interval), 500)
+
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillRect(0, 0, 950, 950)
         
         this.ctx.font = 'bold 100px Courier New'
         this.ctx.fillStyle = 'rgba(253, 227, 0)'
-        this.ctx.fillText('GAME OVER', this.canvasSize.width / 2 - 250, this.canvasSize.height / 2 )
+        this.ctx.fillText('You lose!', this.canvasSize.width / 2 - 250, this.canvasSize.height / 2 - 180)
+        
+        this.imageLose = new Image();
+        this.imageLose.src = `./img/you-lose.png`
+        this.ctx.drawImage(this.imageLose, this.canvasSize.width / 2 - 200, this.canvasSize.height / 2 - 200 , 400, 400)
+
+        this.ctx.font = 'bold 30px Courier New'
+        this.ctx.fillStyle = 'rgba(253, 227, 0)'
+        this.ctx.fillText('Press start to try again.', this.canvasSize.width / 2 - 200, this.canvasSize.height - 250)
+
+    },
+    youWin() {
+        setTimeout(() => clearInterval(this.interval), 500)
+
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillRect(0, 0, 950, 950)
+
+        this.ctx.font = 'bold 100px Courier New'
+        this.ctx.fillStyle = 'rgb(119, 124, 188);'
+        this.ctx.fillText('You win!', this.canvasSize.width / 2 - 250, this.canvasSize.height / 2 - 180)
+
+
+        this.imageWin = new Image();
+        this.imageWin.src = `./img/you-win.png`
+        this.ctx.drawImage(this.imageWin, this.canvasSize.width / 2 - 200, this.canvasSize.height / 2 - 200 , 400, 400)
+
+        this.ctx.font = 'bold 30px Courier New'
+        this.ctx.fillStyle = 'rgba(253, 227, 0)'
+        this.ctx.fillText('Press start to play again.', this.canvasSize.width / 2 - 250, this.canvasSize.height - 250)
+        
     }
 }
-
-
 
 
 
