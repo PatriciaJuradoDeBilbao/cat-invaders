@@ -32,7 +32,6 @@ const game = {
         this.canvasDom = document.getElementById("catInvadersCanvas")
         this.ctx = this.canvasDom.getContext("2d")
         this.setDimensions()
-        this.reset()
         this.start()
     },
     setDimensions() {
@@ -48,14 +47,26 @@ const game = {
     },
     reset() {
         this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
-        this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height)
-        this.generateCats()
-    },
-    start() {
-        this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
         this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height, this.keys)
         this.scorePoints = new ScorePoints(this.ctx, this.canvasSize)
         this.playerLives = new PlayerLives(this.ctx, this.canvasSize, 3, './img/lives-pixel-heart-png')
+        this.bulletCat = []
+        this.cats = []
+        this.bullets = []
+        this.catImages = []
+        this.pointsPowerUp = null
+
+
+        //instanciar sonidos
+        //this.nombreaudio = new Audio()
+        //this.nombreaudio.src = `ruta`
+
+    },
+    start() {
+        this.reset()
+
+        this.generateCats()
+        //sonido fondo play
         this.interval = setInterval(() => {
             this.setListener()
             this.clear()
@@ -195,8 +206,7 @@ const game = {
         })
     },
     gameOver(){
-        clearInterval(this.interval)
-        setTimeout(() => clearInterval(this.interval), 5000)
+        setTimeout(() => clearInterval(this.interval), 500)
         
         this.ctx.font = 'bold 100px Courier New'
         this.ctx.fillStyle = 'rgba(253, 227, 0)'
