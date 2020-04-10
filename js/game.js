@@ -2,7 +2,7 @@ const game = {
     name: 'Cat Invaders',
     author: 'Patricia Jurado De Bilbao',
     version: '1.0.0',
-    description: 'Juego estilo space invaders pero con gatos',
+    description: 'Juego estilo space invaders pero ambientado con gatos que tienes que eliminar usando lo que mas odian: agua. Esquiva sus espinas de pescado y logra sumar mas puntos disparandole al gato arcoiris especial',
     license: undefined,
     canvasDom: undefined,
     ctx: undefined,
@@ -61,7 +61,7 @@ const game = {
         this.background = new Background(this.ctx, this.canvasSize.width, this.canvasSize.height)
         this.player = new Player(this.ctx, (this.canvasSize.width / 2) - 25, this.canvasSize.height - 80, 50, 50, this.canvasSize.width, this.canvasSize.height, this.keys)
         this.scorePoints = new ScorePoints(this.ctx, this.canvasSize)
-        this.playerLives = new PlayerLives(this.ctx, this.canvasSize, 3, './img/lives-pixel-heart-png')
+        this.playerLives = new PlayerLives(this.ctx, this.canvasSize, 3, './img/lives-pixel-heart.png')
         this.bulletCat = []
         this.cats = []
         this.bullets = []
@@ -126,7 +126,6 @@ const game = {
                 this.extraLive = null
             }
         }
-        
     },
     generateCats() {
         this.catImages.push("./img/pushee_donut.png", "./img/cry-cat.png", "./img/pixel-cat-png.png", "./img/pixel-cat-png.png")
@@ -179,7 +178,6 @@ const game = {
             })
         if (catArr.length <= 0) {
             this.youWin()
-            
         }
     },
     isCollisionAgainstPlayer(cats) {

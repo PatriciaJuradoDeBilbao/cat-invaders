@@ -9,7 +9,7 @@ body {
     background-color: black;
     font-family: 'VT323', monospace;
     letter-spacing: 2px;
-
+    overflow:hidden
  } 
 
 .game-intro {
