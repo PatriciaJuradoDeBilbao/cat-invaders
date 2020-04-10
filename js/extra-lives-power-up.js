@@ -6,7 +6,7 @@ class ExtraLives {
             height: canvasSize.height
         }
         this.extraLiveImg = new Image()
-        this.extraLiveImg.src = `./img/lives-pixel-heart-png`
+        this.extraLiveImg.src = `./img/lives-pixel-heart.png`
         this.posX = Math.floor(Math.random() * this.canvasSize.width)
         this.posY = 100
         this.width = 45
